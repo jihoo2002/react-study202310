@@ -1,58 +1,78 @@
 import React, { useState } from 'react';
 import './App.css';
-import Expenses from './components/Expenses/Expenses';
-import NexExpense from './components/NewExpense/NexExpense';
+import CourseInput from './components/CourseGoals/CourseInput';
+import CourseList from './components/CourseGoals/CourseList';
+
+const DUMMY_DATA = [
+  {
+    id: 'g1',
+    text: '리액트 컴포넌트 스타일링 마스터하기',
+  },
+  {
+    id: 'g2',
+    text: 'UI 프로그래밍 삽고수되기',
+  },
+];
 
 const App = () => {
-  //지출 항목 객체 배열
+  const [goals, setGoals] = useState(DUMMY_DATA);
 
-  const expenses = [
-    {
-      id: 1,
-      title: '바나나',
-      price: 20000,
-      date: new Date(2023, 3 - 1, 23),
-    },
-    {
-      id: 2,
-      title: 'BBQ치킨',
-      price: 20000,
-      date: new Date(2022, 5 - 1, 21),
-    },
-    {
-      id: 3,
-      title: '도미노피자',
-      price: 35000,
-      date: new Date(2023, 7 - 1, 4),
-    },
-    {
-      id: 4,
-      title: '엽기떡볶이',
-      price: 17000,
-      date: new Date(2021, 3 - 1, 28),
-    },
-  ];
-
-  //지출 객체 배열을 상태변수로 관리
-  const [expenseList, setExpenseList] = useState(expenses);
-  //ExpenseForm 에게 내려보낼 함수
-  const addExpenseHandler = (newExpense) => {
-    console.log('App 컴포넌트에서 응답함');
-
-    const modifyExpense = {
-      ...newExpense,
-      id: expenseList[expenseList.length - 1].id + 1,
+  //Input 에게 전달할 함수
+  const addGoalHandler = (text) => {
+    // console.log('전달받은 텍스트:', text);
+    const newGoal = {
+      id: Math.random().toString(),
+      text: text,
     };
 
-    console.log(modifyExpense);
-    setExpenseList([...expenseList, modifyExpense]);
-    console.log(expenseList);
+    //상태 변수(배열) 수정
+    // setGoals([...goals, newGoal]);
+    setGoals((prevGoals) => [...prevGoals, newGoal]); //콜백함수로 썼을 때
   };
+
+  //삭제 이벤트 핸들러를 CourseItem까지 내려보내야 됨.
+  const deleteGoalHandler = (id) => {
+    // console.log('전달된 id: ', id);
+    //삭제 이벤트 하는 방법 1
+    // const updateGoals = [...goals]; //상태배열 그대로 복사해서 가져옴
+    // const index = updateGoals.findIndex((goal) => goal.id === id);
+
+    // updateGoals.splice(index, 1); //클릭된 해당 배열을 지우기
+    //삭제 방법 2
+    // const updateGoals = goals.filter((goal) => goal.id !== id);
+    setGoals(goals.filter((goal) => goal.id !== id));
+  };
+
+  //CourseList 조건부 랜더링 //자바스크립트 객체니까 중괄호를 두개 넣어야 한다.
+  let listContent = (
+    <p
+      style={{
+        color: 'red',
+        fontSize: '20px',
+        textAlign: 'center',
+        fontWeight: 'bold',
+      }}
+    >
+      목표를 등록해 주세요!
+    </p>
+  );
+  if (goals.length > 0) {
+    listContent = (
+      <CourseList
+        items={goals}
+        onDelete={deleteGoalHandler}
+      />
+    );
+    //props 전달하기 위한 items!
+  }
+
   return (
-    <>
-      <NexExpense onAddExpense={addExpenseHandler} />
-      <Expenses items={expenseList} />
-    </>
+    <div>
+      <section id='goal-form'>
+        <CourseInput onAdd={addGoalHandler} />
+      </section>
+      <section id='goals'>{listContent}</section>
+    </div>
   );
 };
 
