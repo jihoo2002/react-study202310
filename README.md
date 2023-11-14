@@ -26,4 +26,7 @@ $ npm install
 
 # 추가 라이브러리 설치
 
-1. styled-components
+`styled-components`
+
+1. css 확장 라이브러리 sass
+2. -`$npm install sass`
