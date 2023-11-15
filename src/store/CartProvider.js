@@ -10,11 +10,36 @@ const defaultState = {
 // action: 어떤 업데이트를 하는지에 대한 정보와 필요값들이 들어있음. -> 상품 객체
 const cartReducer = (state, action) => {
   if (action.type === 'ADD') {
-    //상품 추가할때마다 발동하는 함수
-    const updatedItem = [...state.items, action.item]; //초기값에 액션으로 넘어온 배열을 추가함
+    //신규 아이템
+    const newCartItem = action.item;
+    //기존 장바구니에 등록된 메뉴인지 아닌지에 따라 처리를 다르게 해야할 것 같다.
+    const index = state.items.findIndex((item) => item.id === newCartItem.id);
+    //기존 아이템
+    const existingItems = [...state.items]; //기존 배열을 복사
+    const prevCartItem = existingItems[index]; //위에서 찾은 인덱스로 요소를 하나만 지목.
+    //state.items라는 배열에서 요소 하나만 지목
+
+    let updatedItem; //기존에 배열 값은 유지하되 새로운 아이템을 추가시켜줘야 한다.
+
+    //id가 일치하는 배열의 인덱스를 index에 저장, 만약 존재하지 않으면 -1을 반환
+    if (index === -1) {
+      //기존에 있던 상품이 아닌 신규 아이템이라는 소리.
+
+      //상품 추가할때마다 발동하는 함수
+      updatedItem = [...state.items, newCartItem]; //초기값에 newCartItem으로 넘어온 배열을 추가함
+    } else {
+      //기존 모달에 존재하던 아이템임 -> 수량을 1 올려주면 되겠다.
+      prevCartItem.amount += newCartItem.amount; //복사된 아이템의 수량을 늘러줌
+      //만약 ++이라고 작성한다면 모달에서는 하나씩 수량이 올라가지만 바깥 메인에서는 2개든 3개든 하나씩만 올라간다는 보장이 없다.
+      //그래서 +=로 작성하는 게 안전하다.
+
+      //기존 아이템의 amount에다가 새로운 amount
+      updatedItem = [...existingItems]; //새롭게 복사 배열을 갱신.
+    }
+
     console.log(updatedItem);
     const updatedPrice =
-      state.totalPrice + action.item.price * action.item.amount;
+      state.totalPrice + newCartItem.price * newCartItem.amount;
     return {
       //여기서 리턴된 값이 cartState로 전달된다.
       items: updatedItem, //추가한 상품
@@ -43,7 +68,7 @@ const CartProvider = ({ children }) => {
       dispatchCartAction({
         type: 'ADD',
         item: item,
-      }); //action으로 넘어감
+      }); //action으로 넘어감 아이템 하나씩 넘겨오기 때문에 item
     },
     removeItem: (id) => {
       dispatchCartAction({
