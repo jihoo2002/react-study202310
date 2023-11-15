@@ -46,9 +46,29 @@ const cartReducer = (state, action) => {
       totalPrice: updatedPrice, //상품이 추가될때마다 가격이 올라가야함
     }; // 이 액션에 대한 업데이트된 새로운 상태 반환.
   } else if (action.type === 'REMOVE') {
-    const removedItems = state.items.filter((item) => item.id !== action.id);
+    //기존 배열을 복사
+    const existingItems = [...state.items];
+    //지금 제거대상의 인덱스를 찾자.
+    const index = existingItems.findIndex((item) => item.id === action.id);
+    //제거 대상 아이템을 가져옴
+    const delTargetItem = existingItems[index];
+    //총액 계산
+    const updatePrice = state.totalPrice - delTargetItem.price; //제거된 장바구니 아이템의 가격을 빼주면 됨
+
+    //업데이트 전의 수량이 1이라면 filter로 배열에서 아예 빼버리는 것이 맞다..
+    //근데 1보다 크다면 filter로 제거하면 안되고,
+    //기존 배열에서 수량만 1 내린채로 업데이트 해야함
+    let removedItems;
+    if (delTargetItem.amount === 1) {
+      removedItems = state.items.filter((item) => item.id !== action.id);
+    } else {
+      delTargetItem.amount--; //수량을 감소시키는 것은 모달 내부에서만 가능하기에 증감연산자 사용해도 된다.
+      removedItems = [...existingItems];
+    }
+    //filter는 기존의 배열에 id가 일치한다면 배열에서 빼버림
     return {
       items: removedItems,
+      totalPrice: updatePrice, //사용자가 취소한 상품의 금액만큼 빼고 남은 금액 전달
     };
   }
 
