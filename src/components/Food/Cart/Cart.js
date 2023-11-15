@@ -54,10 +54,10 @@ const Cart = ({ onClose }) => {
         >
           닫기
         </button>
-        <button className={button}>주문</button>
+        {items.length > 0 && <button className={button}>주문</button>}
       </div>
     </CartModal>
   );
-};
+}; // 아이템이 하나도 없다면 주문 버튼이 보이지 않게 하기
 
 export default Cart;
