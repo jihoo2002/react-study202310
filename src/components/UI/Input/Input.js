@@ -10,7 +10,7 @@ const Input = ({ input, label, onAdd }) => {
       <label htmlFor={input.id}>{label}</label>
       <input
         {...input}
-        onChange={amountChangeHandler}
+        onChange={amountChangeHandler} //수량을 올렸을때 내렸을때 발동
       />
     </div>
   );

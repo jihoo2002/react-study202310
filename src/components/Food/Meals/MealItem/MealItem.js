@@ -10,12 +10,12 @@ const MealItem = ({ id, price, description, name }) => {
   const { addItem } = useContext(CartContext); //useContext 를 통해 CartContext안 설정한 데이터를 꺼낼 수 있음 그걸 addItem에다 저장?
   //CartProvider에서 가져온 addItem!
   const addToCartHandler = (amount) => {
-    //수량을 누가 주는 거지?
+    //수량을 누가 주는 거지? mealItemForm에서 !
     const item = {
       id: id,
       name: name,
       price: price,
-      amount: +amount,
+      amount: +amount, //문자를 숫자형으로 변환
     };
     addItem(item);
   };

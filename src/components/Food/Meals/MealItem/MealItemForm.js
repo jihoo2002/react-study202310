@@ -4,7 +4,7 @@ import styles from './MealItemForm.module.scss';
 
 const MealItemForm = ({ id, onAddToCart }) => {
   // 수량의 상태를 관리하는 변수. onAddToCart라는 이름의 더미객체가 날라옴
-  const [amount, setAmount] = useState(0); //초기 상태 0인 amount를 만들어주자
+  const [amount, setAmount] = useState(1); //초기 상태 0인 amount를 만들어주자
 
   // 담기 버튼을 누르면 발동하는 함수.
   const formSubmitHandler = (e) => {

@@ -1,7 +1,9 @@
 //여기서 담아서 Modal에 보낼 것임.
-import React from 'react';
+import React, { useContext } from 'react';
 import CartModal from '../../UI/Modal/CartModal';
 import styles from './Cart.module.scss';
+import Cartcontext from '../../../store/cart-context';
+import CartItem from './CartItem';
 
 const DUMMY_CART = [
   {
@@ -28,17 +30,22 @@ const Cart = ({ onClose }) => {
     button,
   } = styles;
 
+  const { items, totalPrice } = useContext(Cartcontext);
+
   return (
     <CartModal onClose={onClose}>
       {/* 주문내역*/}
       <ul className={cartItemStyle}>
-        {DUMMY_CART.map((cartItem) => (
-          <li key={cartItem.id}>{cartItem.name}</li>
+        {items.map((cartItem) => (
+          <CartItem
+            key={cartItem.id}
+            cart={cartItem}
+          /> //map에서 객체가 전달될 때마다 컴포넌트가 반복됨
         ))}
       </ul>
       <div className={total}>
         <span>주문 총액</span>
-        <span>50,000</span>
+        <span>{new Intl.NumberFormat('ko-KR').format(totalPrice)}원</span>
       </div>
       <div className={actions}>
         <button
